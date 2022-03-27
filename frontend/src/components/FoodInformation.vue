@@ -1,11 +1,11 @@
 <template>
-    <v-card elevation="1">
+    <v-card elevation="1" class="foodItem" @click="callback($event)">
         <v-toolbar style="height: 35px;" class='blue-grey lighten-1 white--text font-weight-bold' dense flat>
             <span id="title">{{ this.foodTitle }}</span>
             <v-spacer></v-spacer>
             <span id='price'>{{ this.foodPrice }}￥</span>
         </v-toolbar>
-        <v-img :src="'http://localhost:3000/public/image/' + this.foodImage" height="130" width="165"></v-img>
+        <v-img :src="'http://localhost:3000/public/image/' + this.foodImage"></v-img>
         <!-- <v-card-text class='py-4 my-2'>
             <slot></slot>
         </v-card-text> -->
@@ -19,7 +19,8 @@ export default {
         return {
             foodTitle: "",
             foodImage: "",
-            foodPrice: null
+            foodPrice: null,
+            clicked: false
         }
     },
     props: {
@@ -32,6 +33,13 @@ export default {
         this.foodImage = this.foodImg
         this.foodPrice = this.price
     },
+    methods: {
+        callback: function(e) {
+        this.clicked = true
+        setTimeout(() => this.clicked = false, 500)
+        this.$emit('click', e)
+        }
+  }
 }
 </script>
 
@@ -43,5 +51,10 @@ export default {
 #price {
     height: 35px !important;
     text-align: right;
+}
+
+.foodItem:hover {
+    opacity: 0.5;
+    cursor: pointer;
 }
 </style>

@@ -12,6 +12,7 @@
                                 :food-name="food.foodName"
                                 :food-img="food.foodImage"
                                 :price="food.price"
+                                @click="onSelect(food)"
                             >
                             </FoodInfo>
                         </v-col>
@@ -45,6 +46,8 @@ import Header from '../components/Header.vue'
 import CustomButton from '../components/CustomButton.vue'
 import FoodInfo from '../components/FoodInformation.vue'
 import Tabulator from 'tabulator-tables'
+import 'tabulator-tables/dist/css/tabulator.min.css'
+import 'tabulator-tables/dist/css/tabulator_semanticui.min.css'
 
 export default {
     name: 'Menu',
@@ -67,26 +70,26 @@ export default {
                 {id:8, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
                 {id:9, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
                 {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
-                {id:10, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:11, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:12, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:13, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:14, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:15, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:16, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:17, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:18, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:19, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:20, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:21, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:22, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
+                {id:23, foodName: 'Pho', price: 800, foodImage: 'pho.jpg'},
             ]
         }
     },
     mounted() {
-    this.$store.dispatch('initState')
-    this.$store.dispatch('setAuth', this.$attrs.auth)
-  }
+        this.$store.dispatch('setAuth', this.$attrs.auth)
+        this.$store.dispatch('initState')
+    }
 }
 </script>
 
