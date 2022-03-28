@@ -14,14 +14,12 @@ import Message from './modules/message.js'
 
 // コンポーネントの読み込み
 import CustomButton from './components/CustomButton.vue'
-import MenuOderList from './components/MenuOderList.vue'
 import Header from './components/Header.vue'
 import FoodInformation from './components/FoodInformation.vue'
 import Footer from './components/Footer.vue'
 
 // コンポーネントの取込
 Vue.component('CustomButton', CustomButton)
-Vue.component('MenuOderList', MenuOderList)
 Vue.component('Header', Header)
 Vue.component('FoodInformation', FoodInformation)
 Vue.component('Footer', Footer)
