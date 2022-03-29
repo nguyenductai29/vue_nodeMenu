@@ -19,26 +19,26 @@
                     </v-row>
                 </v-col>
                 <v-col cols='4'>
-                    <v-row style="margin-bottom: 0px;">
-                        <v-col id="menuOderList">
-                            <v-form ref='save_form'>
+                    <v-form ref='save_form'>
+                        <v-row style="margin-bottom: 0px;">
+                            <v-col id="menuOderList">
                                 <div id="orderListTable" ref="table">
                                 </div>
-                            </v-form>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col id="menuOderPayment">
-                            <v-row>
-                                <v-col cols='6' style="white-space: nowrap;"><p><span><b>消費税（10％）：</b></span></p></v-col>
-                                <v-col cols='6' class="text-lg-right"><p><span>{{ this.taxPrice }} ￥</span></p></v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols='6' style="white-space: nowrap;"><p><span><b>総合計：</b></span></p></v-col>
-                                <v-col cols='6' class="text-lg-right"><p><span>{{ this.itemPrice }} ￥</span></p></v-col>
-                            </v-row>
-                        </v-col>
-                    </v-row>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col id="menuOderPayment">
+                                <v-row>
+                                    <v-col cols='6' style="white-space: nowrap;"><p><span><b>消費税（10％）：</b></span></p></v-col>
+                                    <v-col cols='6' class="text-lg-right"><p><span>{{ this.taxPrice }} ￥</span></p></v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols='6' style="white-space: nowrap;"><p><span><b>総合計：</b></span></p></v-col>
+                                    <v-col cols='6' class="text-lg-right"><p><span>{{ this.itemPrice }} ￥</span></p></v-col>
+                                </v-row>
+                            </v-col>
+                        </v-row>
+                    </v-form>
                     <v-row>
                         <v-col id="btnOder">
                             <CustomButton
@@ -100,9 +100,10 @@ export default {
                 {id:23, foodName: 'ピーナッツおこわセット', size: null, count: 1, price: 550, foodImage: 'xoilac.jpg'},
             ],
             invalidSelect: [
-                { text: '大盛', value: 0 },
-                { text: '中盛', value: 1 },
-                { text: '並盛', value: 2 },
+                { text: '特盛', value: 0 },
+                { text: '大盛', value: 1 },
+                { text: '中盛', value: 2 },
+                { text: '並盛', value: 3 },
             ],
             invalidCountSelect: [
                 { text: '1', value: 1 },
@@ -119,13 +120,13 @@ export default {
             tax: 0,
             total: 0,
             actionColumn: [
-                { title: '', field: 'actions', formatter: () => `<div id='actions'>${this.$iconTemplate.delete}</div>`, resizable: false, headerSort: false, width: '50' }
+                { title: '', field: 'actions', formatter: (cell) => `<div id='actions'>${this.$iconTemplate.delete}</div>`, resizable: false, headerSort: false, width: '50' }
             ],
             options: {
                 movableRows: true,
-                headerSort: false,
-                height: 490,
-                layout:"fitDataFill",
+                height: 497,
+                layout: 'fitColumns',
+                rowFormatter: (row) => row.getData()
             }
         }
     },
@@ -134,12 +135,6 @@ export default {
             handler: function (newData) {
                 if (!newData) return
                 this.tabulator.replaceData(newData)
-            },
-            deep: true
-        },
-        itemPrice: {
-            handler: function(newData) {
-
             },
             deep: true
         }
@@ -151,42 +146,66 @@ export default {
             const invalidParams = this.invalidSelect.reduce((pre, cur) => Object.assign(pre, { [cur.text]: cur.text }), {})
             const invalidCountParams = this.invalidCountSelect.reduce((pre, cur) => Object.assign(pre, { [cur.text]: cur.text }), {})
             const baseColumn = [
-                { title: '品名', field: 'foodName', width: 220, },
-                { title: 'サイズ', field: 'size', width: 100, editor:"select", editorParams: { values: invalidParams } },
-                { title: '個数', field: 'count', width: 100, editor:"select", editorParams: { values: invalidCountParams }},
-                { title: '金額', field: 'price', width: 95 }
+                { rowHandle: true, formatter:'handle', frozen: true, width: 30 },
+                { title: '品名', field: 'foodName', width: 230, },
+                { title: 'サイズ', field: 'size', width: 90, editor:"select", editorParams: { values: invalidParams } },
+                { title: '個数', field: 'count', width: 80, editor:"select", editorParams: { values: invalidCountParams } },
+                { title: '金額', field: 'price', width: 100}
             ]
             this.options.columns = baseColumn.concat(this.actionColumn)
+            this.options.data = this.oder_items
             this.tabulator = new Tabulator(this.$refs.table, this.options);
+            this.cellClick(this.tabulator)
+            this.dataChanged(this.tabulator)
         } catch (err) {
             console.log(err)
         }
     },
     methods: {
-        dataChanged() {
-           this.tabulator.on()
+        dataChanged(table) {
+            table.on("dataChanged", (data) => {
+                data.reduce((val) => {
+                    console.log(val)
+                })
+                // this.oder_items = data
+            }, this);
+            this.calculationPayment(this.oder_items)
         },
-        cellClick(e, cell) {
-        const methodsName = e.target.getAttribute('call-methods')
-        const row = cell.getRow()
-        switch (methodsName) {
-            case 'onDelete': this.onDelete(row); break
-        }
+        cellClick(table) {
+            table.on('cellClick', (e, cell) => {
+                const methodsName = e.target.getAttribute('call-methods')
+                const row = cell.getRow()
+                const rowData = row.getData()
+                switch (methodsName) {
+                    case 'onDelete':
+                        this.onDelete(row);
+                        break
+                }
+            }, this)
         },
         onSelect(food) {
             const isExisted = this.oder_items.some(item => item.id === food.id)
             if (!isExisted) {
                 this.oder_items.push(food)
-                this.tax = food.price * 0.1
-                this.taxPrice += this.tax
-                this.total += food.price
-                this.itemPrice = this.total + this.taxPrice
+                this.calculationPayment(this.oder_items)
             }
         },
-        onDelete() {
-            this.tabulator.on('rowClick', (e, row) => {
-  	            alert("Row " + row.getIndex() + " Clicked!!!!");
-            })
+        onDelete(row) {
+            const index = row.getIndex()
+            row.delete(index)
+            const rowDatas = this.tabulator.getData();
+            this.calculationPayment(rowDatas)
+            if (rowDatas.length === 0) {
+                this.tax = 0
+                this.total = 0
+                this.taxPrice = null
+                this.itemPrice = null
+            }
+        },
+        calculationPayment(rowDatas) {
+            this.total = rowDatas.reduce((sumPrice, value) => sumPrice + parseInt(value.price), 0)
+            this.taxPrice = this.total * 0.1
+            this.itemPrice = this.total + this.taxPrice
         }
     },
 }
